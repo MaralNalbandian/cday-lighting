@@ -17,6 +17,7 @@ import Contact from './pages/Contact';
 const DetailedAbout = () => <div className="container" style={{paddingTop: '120px', minHeight: '80vh'}}><h1>About Page</h1></div>;
 const DetailedServices = () => <div className="container" style={{paddingTop: '120px', minHeight: '80vh'}}><h1>Services Page</h1></div>;
 const DetailedProjects = () => <div className="container" style={{paddingTop: '120px', minHeight: '80vh'}}><h1>Projects Page</h1></div>;
+const DetailedTrusts = () => <div className="container" style={{paddingTop: '120px', minHeight: '80vh'}}><h1>Projects Page</h1></div>;
 
 // Simple Contact page component if you don't have one yet
 const ContactPage = () => (

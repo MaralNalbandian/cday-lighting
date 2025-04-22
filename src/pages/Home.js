@@ -10,6 +10,7 @@ import Services from '../components/home/Services';
 import Projects from '../components/home/Projects';
 import FAQSection from '../components/home/FAQ';
 import ContactCTA from '../components/home/ContactCTA';
+import TrustedBy from '../components/home/TrustedBy';
 
 const Home = () => {
   const location = useLocation();
@@ -60,6 +61,8 @@ const Home = () => {
         <Projects />
       </section>
       
+      <TrustedBy />
+
       <FAQSection />
       
       <section id="contact-section">
