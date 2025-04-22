@@ -8,7 +8,8 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 gsap.registerPlugin(ScrollTrigger);
 
 const Projects = () => {
-  const projectsRef = useRef(null);
+  const sectionRef = useRef(null);
+  const projectsContainerRef = useRef(null);
   
   const projects = [
     {
@@ -47,53 +48,136 @@ const Projects = () => {
   ];
   
   useEffect(() => {
-    const projectsSection = projectsRef.current;
-    if (!projectsSection) return;
+    const section = sectionRef.current;
+    const container = projectsContainerRef.current;
+    
+    if (!section || !container) return;
+    
+    // Set container height to allow for scrolling
+    gsap.set(container, { height: '200vh' });
     
     // Get all project cards
-    const cards = projectsSection.querySelectorAll('.project-card');
+    const cards = document.querySelectorAll('.project-card');
+    const totalCards = cards.length;
     
-    // Skip the first card (it stays in place)
-    for (let i = 1; i < cards.length; i++) {
-      const card = cards[i];
-      const prevCard = cards[i-1];
+    // Break the scroll into sections for each card
+    const sectionSize = 1 / totalCards;
+    
+    // Function to update card visibility and animation
+    const updateCards = (progress) => {
+      // Determine which card should be active based on scroll progress
+      let activeIndex = Math.floor(progress * totalCards);
+      activeIndex = Math.min(activeIndex, totalCards - 1);
       
-      // Set initial position - cards start with normal positioning
-      gsap.set(card, { 
-        y: 0,
-        position: 'relative',
-        zIndex: i + 1 // Higher cards need higher z-index
-      });
-      
-      // Create the scroll animation for this card
-      gsap.to(card, {
-        y: -160, // Move up to overlap previous card
-        scrollTrigger: {
-          trigger: prevCard, // Animation starts when previous card is in view
-          start: "center center+=100", // Start when previous card is at center
-          end: "bottom center", // End when bottom of previous card reaches center
-          scrub: 1, // Smooth scrubbing effect
-          // markers: true, // Uncomment for debugging
+      cards.forEach((card, index) => {
+        // Remove all classes first
+        card.classList.remove('active', 'entering', 'exiting');
+        
+        if (index === activeIndex) {
+          // This is the active card
+          card.classList.add('active');
+          gsap.to(card, { 
+            opacity: 1, 
+            y: 0, 
+            display: 'block',
+            duration: 0.5 
+          });
+        } 
+        else if (index === activeIndex + 1 && activeIndex < totalCards - 1) {
+          // This is the next card preparing to enter
+          card.classList.add('entering');
+          
+          // Calculate how close it is to becoming active
+          const nextThreshold = (index * sectionSize);
+          const localProgress = (progress - (activeIndex * sectionSize)) / sectionSize;
+          
+          if (localProgress > 0.7) {
+            // Start transitioning this card in
+            const entryProgress = (localProgress - 0.7) / 0.3;
+            gsap.to(card, { 
+              opacity: entryProgress, 
+              y: 50 * (1 - entryProgress), 
+              display: 'block',
+              duration: 0.2 
+            });
+          } else {
+            // Keep it hidden but ready
+            gsap.set(card, { 
+              opacity: 0, 
+              y: 50, 
+              display: 'none'
+            });
+          }
+        }
+        else if (index === activeIndex - 1) {
+          // This is the previous card that's exiting
+          card.classList.add('exiting');
+          
+          // Calculate exit progress
+          const prevThreshold = (index * sectionSize);
+          const localProgress = (progress - prevThreshold) / sectionSize;
+          
+          if (localProgress < 0.3) {
+            // Still showing but fading out
+            const exitProgress = 1 - (localProgress / 0.3);
+            gsap.to(card, { 
+              opacity: exitProgress, 
+              y: -30 * (1 - exitProgress), 
+              display: 'block',
+              duration: 0.2 
+            });
+          } else {
+            // Fully hidden
+            gsap.set(card, { 
+              opacity: 0, 
+              y: -30, 
+              display: 'none'
+            });
+          }
+        }
+        else {
+          // Not active, entering, or exiting - keep hidden
+          gsap.set(card, { 
+            opacity: 0, 
+            display: 'none'
+          });
         }
       });
-    }
+    };
     
-    // Clean up
+    // Set up ScrollTrigger
+    const scrollTrigger = ScrollTrigger.create({
+      trigger: container,
+      start: "top top",
+      end: "bottom bottom",
+      scrub: 0.5,
+      onUpdate: (self) => {
+        // Get scroll progress (0 to 1)
+        const progress = self.progress;
+        updateCards(progress);
+      },
+      invalidateOnRefresh: true
+    });
+    
+    // Initialize first card as visible
+    updateCards(0);
+    
+    // Cleanup
     return () => {
-      ScrollTrigger.getAll().forEach(trigger => trigger.kill());
+      if (scrollTrigger) scrollTrigger.kill();
     };
   }, []);
   
   return (
-    <ProjectsWrapper>
+    <ProjectsSection ref={sectionRef}>
       <div className="container">
         <ProjectsHeading>
-          <span>Our work</span>
+          <SectionTag>Our work</SectionTag>
           <h2>Get inspired by our work</h2>
           <p>See how we've transformed homes with our expert customisation and attention to detail.</p>
         </ProjectsHeading>
         
-        <ProjectsList ref={projectsRef}>
+        <ProjectsContainer ref={projectsContainerRef}>
           {projects.map((project, index) => (
             <ProjectCard 
               key={project.id} 
@@ -102,61 +186,51 @@ const Projects = () => {
               total={projects.length}
             />
           ))}
-        </ProjectsList>
+        </ProjectsContainer>
       </div>
-    </ProjectsWrapper>
+    </ProjectsSection>
   );
 };
 
-const ProjectsWrapper = styled.section`
-  padding: ${props => props.theme.spacing.section};
+const ProjectsSection = styled.section`
+  padding: 80px 0;
   position: relative;
-  background-color: ${props => props.theme.colors.background};
+  overflow: hidden;
 `;
 
 const ProjectsHeading = styled.div`
   text-align: center;
   margin-bottom: 60px;
   
-  span {
-    display: inline-block;
-    background-color: ${props => props.theme.colors.secondary};
-    color: ${props => props.theme.colors.text};
-    padding: 5px 15px;
-    border-radius: 50px;
-    font-size: 14px;
-    margin-bottom: 20px;
-    font-weight: 500;
-  }
-  
   h2 {
-    font-size: 50px;
+    font-size: 48px;
+    font-weight: 700;
     margin-bottom: 20px;
-    color: ${props => props.theme.colors.black};
-    
-    @media (max-width: ${props => props.theme.breakpoints.md}) {
-      font-size: 36px;
-    }
   }
   
   p {
     max-width: 700px;
     margin: 0 auto;
-    color: ${props => props.theme.colors.lightText};
+    font-size: 18px;
+    color: #666;
   }
 `;
 
-const ProjectsList = styled.div`
-  margin-top: 80px;
+const SectionTag = styled.div`
+  display: inline-block;
+  background-color: #222;
+  color: white;
+  padding: 5px 15px;
+  border-radius: 50px;
+  font-size: 14px;
+  margin-bottom: 20px;
+`;
+
+const ProjectsContainer = styled.div`
   position: relative;
-  
-  /* Ensure enough space for the project cards */
-  padding-bottom: 300px;
-  
-  /* Add larger padding on mobile */
-  @media (max-width: ${props => props.theme.breakpoints.md}) {
-    padding-bottom: 500px;
-  }
+  width: 100%;
+  min-height: 600px; // Minimum height for the container
+  // Height will be set by GSAP
 `;
 
 export default Projects;

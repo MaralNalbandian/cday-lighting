@@ -7,53 +7,33 @@ const Footer = () => {
   return (
     <FooterWrapper>
       <div className="container">
-        <FooterContent>
+        <FooterTop>
           <FooterLogo>
             <Logo />
           </FooterLogo>
           
-          <FooterContact>
-            <ContactItem>
-              <label>Office</label>
-              <span>44 Carlingford Street, Regents Park NSW 2143</span>
-            </ContactItem>
-            
-            <ContactItem>
-              <label>Email</label>
-              <a href="mailto:info@cdaylighting.com.au">info@cdaylighting.com.au</a>
-            </ContactItem>
-            
-            <ContactItem>
-              <label>Telephone</label>
-              <a href="tel:1300000CDAY">1300 00C DAY</a>
-            </ContactItem>
-          </FooterContact>
-          
-          <FooterSocial>
-            <h4>Follow us</h4>
-            <SocialLinks>
-              <a href="https://instagram.com/cdaylighting" target="_blank" rel="noopener noreferrer">
-                <i className="fab fa-instagram"></i>
-              </a>
-            </SocialLinks>
-          </FooterSocial>
-          
           <FooterLinks>
             <h4>Quick links</h4>
-            <ul>
-              <li><Link to="/about">About us</Link></li>
-              <li><Link to="/our-work">Our work</Link></li>
-              <li><Link to="/services">Services</Link></li>
-              <li><Link to="/faqs">FAQs</Link></li>
-              <li><Link to="/contact">Contact</Link></li>
-              <li><Link to="/testimonials">Testimonials</Link></li>
-            </ul>
+            <FooterLinksColumns>
+              <FooterLinksColumn>
+                <FooterLink to="/about">About us</FooterLink>
+                <FooterLink to="/our-work">Our work</FooterLink>
+                <FooterLink to="/services">Services</FooterLink>
+              </FooterLinksColumn>
+              <FooterLinksColumn>
+                <FooterLink to="/testimonials">Testimonials</FooterLink>
+                <FooterLink to="/faqs">FAQs</FooterLink>
+                <FooterLink to="/contact">Contact</FooterLink>
+              </FooterLinksColumn>
+            </FooterLinksColumns>
           </FooterLinks>
-        </FooterContent>
+        </FooterTop>
+        
+        <FooterDivider />
         
         <FooterBottom>
-          <p>&copy; 2025. All rights reserved.</p>
-          <p>Design by Elite Digital & Consulting</p>
+          <FooterCopyright>&copy; 2025. All rights reserved.</FooterCopyright>
+          <FooterCredits>Design by Elite Digital & Consulting</FooterCredits>
         </FooterBottom>
       </div>
     </FooterWrapper>
@@ -63,21 +43,17 @@ const Footer = () => {
 const FooterWrapper = styled.footer`
   background-color: #000;
   padding: 80px 0 40px;
+  color: white;
 `;
 
-const FooterContent = styled.div`
-  display: grid;
-  grid-template-columns: 1fr 1fr 1fr 1fr;
-  gap: 40px;
+const FooterTop = styled.div`
+  display: flex;
+  justify-content: space-between;
   margin-bottom: 60px;
   
-  @media (max-width: ${props => props.theme.breakpoints.lg}) {
-    grid-template-columns: 1fr 1fr;
-    gap: 30px;
-  }
-  
-  @media (max-width: ${props => props.theme.breakpoints.sm}) {
-    grid-template-columns: 1fr;
+  @media (max-width: 768px) {
+    flex-direction: column;
+    gap: 40px;
   }
 `;
 
@@ -85,98 +61,63 @@ const FooterLogo = styled.div`
   width: 150px;
 `;
 
-const FooterContact = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-`;
-
-const ContactItem = styled.div`
-  display: flex;
-  flex-direction: column;
-  
-  label {
-    font-weight: 600;
-    margin-bottom: 5px;
-  }
-  
-  span, a {
-    color: ${props => props.theme.colors.gray};
-    transition: color 0.3s ease;
-  }
-  
-  a:hover {
-    color: ${props => props.theme.colors.white};
-  }
-`;
-
-const FooterSocial = styled.div`
-  h4 {
-    margin-bottom: 20px;
-  }
-`;
-
-const SocialLinks = styled.div`
-  display: flex;
-  gap: 15px;
-  
-  a {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    background-color: ${props => props.theme.colors.darkGray};
-    transition: background-color 0.3s ease;
-    
-    i {
-      font-size: 20px;
-    }
-    
-    &:hover {
-      background-color: ${props => props.theme.colors.primary};
-    }
-  }
-`;
-
 const FooterLinks = styled.div`
   h4 {
-    margin-bottom: 20px;
+    font-size: 20px;
+    font-weight: 600;
+    margin-bottom: 24px;
   }
+`;
+
+const FooterLinksColumns = styled.div`
+  display: flex;
+  gap: 80px;
   
-  ul {
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-    
-    li a {
-      color: ${props => props.theme.colors.gray};
-      transition: color 0.3s ease;
-      
-      &:hover {
-        color: ${props => props.theme.colors.white};
-      }
-    }
+  @media (max-width: 576px) {
+    gap: 40px;
   }
+`;
+
+const FooterLinksColumn = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+`;
+
+const FooterLink = styled(Link)`
+  color: #a0a0a0;
+  text-decoration: none;
+  transition: color 0.2s ease;
+  
+  &:hover {
+    color: white;
+  }
+`;
+
+const FooterDivider = styled.div`
+  height: 1px;
+  background-color: #333;
+  margin-bottom: 30px;
 `;
 
 const FooterBottom = styled.div`
   display: flex;
   justify-content: space-between;
-  padding-top: 20px;
-  border-top: 1px solid ${props => props.theme.colors.darkGray};
   
-  p {
-    font-size: 14px;
-    color: ${props => props.theme.colors.gray};
-  }
-  
-  @media (max-width: ${props => props.theme.breakpoints.sm}) {
+  @media (max-width: 576px) {
     flex-direction: column;
     gap: 10px;
-    align-items: center;
   }
+`;
+
+const FooterCopyright = styled.p`
+  color: #a0a0a0;
+  font-size: 14px;
+`;
+
+const FooterCredits = styled.p`
+  color: #a0a0a0;
+  font-size: 14px;
 `;
 
 export default Footer;

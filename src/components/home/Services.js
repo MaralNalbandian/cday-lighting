@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
+import { ArrowRight } from 'lucide-react'; // Assuming you're using lucide-react icons
 
 const Services = () => {
   const [activeService, setActiveService] = useState(0);
@@ -8,28 +9,21 @@ const Services = () => {
     {
       id: 1,
       title: 'Assess lighting needs',
-      content: 'We take the time to understand each projects unique requirements — from architectural plans and space functionality to mood, ambiance, and energy efficiency goals. Our team works closely with clients, builders, and designers to conduct a comprehensive lighting assessment that ensures every fixture serves a clear purpose, aligns with the overall design aesthetic, and performs optimally for the environment its placed in.'
+      content: 'We take the time to understand each project\'s unique requirements — from architectural plans and space functionality to mood, ambiance, and energy efficiency goals. Our team works closely with clients, builders, and designers to conduct a comprehensive lighting assessment that ensures every fixture serves a clear purpose, aligns with the overall design aesthetic, and performs optimally for the environment it\'s placed in.',
+      image: 'images/assessLighting.jpg' // Replace with actual image paths
     },
     {
       id: 2,
       title: 'Cross-specify fittings',
-      content: 'Our team carefully selects lighting fixtures that not only meet aesthetic requirements but also technical specifications and energy efficiency standards. We work with leading brands and manufacturers to ensure the highest quality products for your project.'
+      content: 'Our team leverages in-depth product knowledge and industry experience to recommend alternative fittings that match or exceed the original specifications — often at a more competitive price point. We ensure that any substitution maintains the intended look, feel, and performance of the design, helping clients stay within budget without compromising on quality or aesthetics.',
+      image: 'images/crossspecifyFittings.jpg'
     },
     {
       id: 3,
       title: 'Customise solutions',
-      content: 'Every space is unique, and we believe lighting should be too. We offer custom lighting solutions tailored to your specific needs, from bespoke fixtures to automated lighting systems that can be controlled remotely or programmed to adjust throughout the day.'
+      content: 'Every project is different — and sometimes, off-the-shelf products aren\'t enough. That\'s why we offer fully customised lighting solutions, including bespoke fittings designed to meet unique architectural, functional, or aesthetic needs. From specialty finishes and dimensions to performance specifications and integration with smart systems, we collaborate with local and international manufacturers to bring one-of-a-kind lighting concepts to life.',
+      image: '/images/customiseSolutions.jpg'
     },
-    {
-      id: 4,
-      title: 'Installation & implementation',
-      content: 'Our skilled technicians handle the installation of all lighting fixtures with precision and care. We coordinate with other contractors to ensure seamless integration with electrical systems and architectural elements.'
-    },
-    {
-      id: 5,
-      title: 'Final adjustments & training',
-      content: 'After installation, we fine-tune all lighting elements to ensure optimal performance and teach you how to use and maintain your new lighting system for years of reliable service.'
-    }
   ];
   
   return (
@@ -41,26 +35,44 @@ const Services = () => {
           <p>Find out which one of our services fit the needs of your project</p>
         </ServicesHeading>
         
-        <ServicesAccordion>
-          {services.map((service, index) => (
-            <AccordionItem 
-              key={service.id} 
-              isActive={activeService === index}
-              onClick={() => setActiveService(index)}
-            >
-              <AccordionHeader>
-                <h3>{service.title}</h3>
-                <AccordionIcon isActive={activeService === index}>
-                  {activeService === index ? '×' : '+'}
-                </AccordionIcon>
-              </AccordionHeader>
-              
-              <AccordionContent isActive={activeService === index}>
-                <p>{service.content}</p>
-              </AccordionContent>
-            </AccordionItem>
-          ))}
-        </ServicesAccordion>
+        <ServiceLayout>
+          {/* Left side - Image */}
+          <ImageContainer>
+            {services.map((service, index) => (
+              <ServiceImage 
+                key={`image-${service.id}`} 
+                isActive={activeService === index}
+                imageUrl={service.image}
+              >
+                <GetInTouchButton>
+                  Get in touch <ArrowRight size={16} />
+                </GetInTouchButton>
+              </ServiceImage>
+            ))}
+          </ImageContainer>
+          
+          {/* Right side - Services accordion */}
+          <ServicesAccordion>
+            {services.map((service, index) => (
+              <AccordionItem 
+                key={service.id} 
+                isActive={activeService === index}
+                onClick={() => setActiveService(index)}
+              >
+                <AccordionHeader>
+                  <h3>{service.title}</h3>
+                  <AccordionIcon isActive={activeService === index}>
+                    {activeService === index ? '×' : '+'}
+                  </AccordionIcon>
+                </AccordionHeader>
+                
+                <AccordionContent isActive={activeService === index}>
+                  <p>{service.content}</p>
+                </AccordionContent>
+              </AccordionItem>
+            ))}
+          </ServicesAccordion>
+        </ServiceLayout>
       </div>
     </ServicesWrapper>
   );
@@ -76,8 +88,8 @@ const ServicesHeading = styled.div`
   
   span {
     display: inline-block;
-    background-color: #222;
-    color: white;
+    background-color: #f5f5f5;
+    color: black;
     padding: 5px 15px;
     border-radius: 50px;
     font-size: 14px;
@@ -96,29 +108,87 @@ const ServicesHeading = styled.div`
   p {
     max-width: 700px;
     margin: 0 auto;
-    color: ${props => props.theme.colors.gray};
+    color: ${props => props.theme.colors?.gray || '#666'};
+  }
+`;
+
+const ServiceLayout = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+  
+  @media (min-width: 768px) {
+    flex-direction: row;
+    align-items: flex-start;
+    gap: 50px;
+  }
+`;
+
+const ImageContainer = styled.div`
+  position: relative;
+  flex: none;
+  width: 100%;
+  height: 400px;
+  
+  @media (min-width: 768px) {
+    width: 50%;
+    height: 600px;
+  }
+`;
+
+const ServiceImage = styled.div`
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: url(${props => props.imageUrl || '/api/placeholder/800/600'});
+  background-size: cover;
+  background-position: center;
+  border-radius: 16px;
+  opacity: ${props => props.isActive ? 1 : 0};
+  transition: opacity 0.5s ease;
+  display: flex;
+  align-items: flex-end;
+  padding: 30px;
+`;
+
+const GetInTouchButton = styled.button`
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background-color: white;
+  color: black;
+  border: none;
+  border-radius: 50px;
+  padding: 12px 24px;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  
+  &:hover {
+    background-color: #f0f0f0;
   }
 `;
 
 const ServicesAccordion = styled.div`
+  flex: 1;
   max-width: 800px;
-  margin: 0 auto;
 `;
 
 const AccordionItem = styled.div`
-  border-radius: 10px;
-  overflow: hidden;
-  margin-bottom: 15px;
-  background-color: ${props => props.isActive ? props.theme.colors.secondary : 'transparent'};
-  border: 1px solid ${props => props.isActive ? props.theme.colors.secondary : props.theme.colors.darkGray};
-  transition: all 0.3s ease;
+  border-top: 1px solid ${props => props.theme.colors?.darkGray || '#ddd'};
+  &:last-child {
+    border-bottom: 1px solid ${props => props.theme.colors?.darkGray || '#ddd'};
+  }
 `;
 
 const AccordionHeader = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 20px;
+  padding: 25px 0;
   cursor: pointer;
   
   h3 {
@@ -130,11 +200,10 @@ const AccordionHeader = styled.div`
 const AccordionIcon = styled.span`
   font-size: 24px;
   transition: transform 0.3s ease;
-  transform: ${props => props.isActive ? 'rotate(0deg)' : 'rotate(0deg)'};
 `;
 
 const AccordionContent = styled.div`
-  padding: ${props => props.isActive ? '0 20px 20px' : '0 20px'};
+  padding-bottom: ${props => props.isActive ? '25px' : '0'};
   max-height: ${props => props.isActive ? '500px' : '0'};
   overflow: hidden;
   transition: all 0.3s ease;
@@ -142,7 +211,8 @@ const AccordionContent = styled.div`
   
   p {
     line-height: 1.6;
-    color: ${props => props.theme.colors.gray};
+    color: ${props => props.theme.colors?.gray || '#666'};
+    padding-right: 40px;
   }
 `;
 

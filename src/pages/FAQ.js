@@ -49,37 +49,43 @@ const FAQ = () => {
   return (
     <FAQWrapper>
       <div className="container">
-        <FAQHeading>
-          <span>FAQs</span>
-          <h2>Answering your questions</h2>
-          <p>Got more questions? Send us your enquiry below</p>
-        </FAQHeading>
-        
-        <FAQAccordion>
-          {faqItems.map(item => (
-            <FAQItem key={item.id}>
-              <FAQQuestion 
-                onClick={() => toggleQuestion(item.id)}
-                isActive={activeQuestion === item.id}
-              >
-                <h3>{item.question}</h3>
-                <FAQIcon isActive={activeQuestion === item.id}>
-                  {activeQuestion === item.id ? '−' : '+'}
-                </FAQIcon>
-              </FAQQuestion>
-              
-              <FAQAnswer isActive={activeQuestion === item.id}>
-                <p>{item.answer}</p>
-              </FAQAnswer>
-            </FAQItem>
-          ))}
-        </FAQAccordion>
-        
-        <ButtonContainer>
-          <Button to="/contact" variant="outline">
-            Get in touch
-          </Button>
-        </ButtonContainer>
+        <FAQLayout>
+          <LeftSide>
+            <FAQHeading>
+              <span>FAQs</span>
+              <h2>Answering your questions</h2>
+              <p>Got more questions? Send us your enquiry below</p>
+            </FAQHeading>
+            
+            <ButtonContainer>
+              <Button to="/contact" variant="outline">
+                Get in touch
+              </Button>
+            </ButtonContainer>
+          </LeftSide>
+          
+          <RightSide>
+            <FAQAccordion>
+              {faqItems.map(item => (
+                <FAQItem key={item.id}>
+                  <FAQQuestion 
+                    onClick={() => toggleQuestion(item.id)}
+                    isActive={activeQuestion === item.id}
+                  >
+                    <h3>{item.question}</h3>
+                    <FAQIcon isActive={activeQuestion === item.id}>
+                      {activeQuestion === item.id ? 'x' : '+'}
+                    </FAQIcon>
+                  </FAQQuestion>
+                  
+                  <FAQAnswer isActive={activeQuestion === item.id}>
+                    <p>{item.answer}</p>
+                  </FAQAnswer>
+                </FAQItem>
+              ))}
+            </FAQAccordion>
+          </RightSide>
+        </FAQLayout>
       </div>
     </FAQWrapper>
   );
@@ -89,8 +95,32 @@ const FAQWrapper = styled.section`
   padding: ${props => props.theme.spacing.section};
 `;
 
+const FAQLayout = styled.div`
+  display: flex;
+  flex-direction: column;
+  
+  @media (min-width: 768px) {
+    flex-direction: row;
+    gap: 60px;
+  }
+`;
+
+const LeftSide = styled.div`
+  @media (min-width: 768px) {
+    width: 33%;
+    position: sticky;
+    top: 100px;
+    align-self: flex-start;
+  }
+`;
+
+const RightSide = styled.div`
+  @media (min-width: 768px) {
+    width: 67%;
+  }
+`;
+
 const FAQHeading = styled.div`
-  max-width: 500px;
   margin-bottom: 40px;
   
   span {
@@ -118,11 +148,15 @@ const FAQHeading = styled.div`
 `;
 
 const FAQAccordion = styled.div`
-  max-width: 800px;
+  max-width: 100%;
 `;
 
 const FAQItem = styled.div`
   border-bottom: 1px solid ${props => props.theme.colors.darkGray};
+  
+  &:first-child {
+    border-top: 1px solid ${props => props.theme.colors.darkGray};
+  }
 `;
 
 const FAQQuestion = styled.div`
@@ -155,11 +189,12 @@ const FAQAnswer = styled.div`
   p {
     line-height: 1.6;
     color: ${props => props.theme.colors.gray};
+    padding-right: 30px;
   }
 `;
 
 const ButtonContainer = styled.div`
-  margin-top: 40px;
+  margin-top: 20px;
 `;
 
 export default FAQ;

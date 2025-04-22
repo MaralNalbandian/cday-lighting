@@ -11,91 +11,125 @@ const ProjectCard = ({ project, index, total }) => {
       className="project-card"
       $isDark={isDark}
       $index={index}
+      $total={total}
+      $zIndex={3 - index} // Ensure proper stacking (first has highest z-index)
+      style={{ opacity: index === 0 ? 1 : 0, display: index === 0 ? 'block' : 'none' }} // Start with only first card visible
     >
-      <CardImage>
-        <img src={project.image} alt={project.title} />
-      </CardImage>
-      
-      <CardContent $isDark={isDark}>
-        <h2>{project.title}</h2>
-        <p>{project.description}</p>
+      <CardInner $isDark={isDark}>
+        <CardImage>
+          <img src={project.image || `/api/placeholder/600/500`} alt={project.title} />
+        </CardImage>
         
-        {project.tags && (
-          <TagContainer>
-            {project.tags.map((tag, i) => (
-              <Tag key={i} $isDark={isDark}>{tag}</Tag>
-            ))}
-          </TagContainer>
-        )}
-        
-        {project.duration && (
-          <Duration $isDark={isDark}>{project.duration}</Duration>
-        )}
-        
-        {project.testimonial && (
-          <Testimonial $isDark={isDark}>
-            <Quote $isDark={isDark}>"</Quote>
-            <p>{project.testimonial.text}</p>
-            {project.testimonial.logo && (
-              <ClientLogo>
-                <img src={project.testimonial.logo} alt="Client logo" />
-              </ClientLogo>
-            )}
-          </Testimonial>
-        )}
-      </CardContent>
+        <CardContent $isDark={isDark}>
+          <h2>{project.title}</h2>
+          <p>{project.description}</p>
+          
+          {project.tags && (
+            <TagContainer>
+              {project.tags.map((tag, i) => (
+                <Tag key={i} $isDark={isDark}>{tag}</Tag>
+              ))}
+            </TagContainer>
+          )}
+          
+          {project.testimonial && (
+            <Testimonial $isDark={isDark}>
+              <Quote $isDark={isDark}>"</Quote>
+              <p>{project.testimonial.text}</p>
+              {project.testimonial.logo && (
+                <ClientLogo>
+                  <img 
+                    src={project.testimonial.logo} 
+                    alt="Client logo" 
+                    className={isDark ? "invert" : ""} 
+                  />
+                </ClientLogo>
+              )}
+            </Testimonial>
+          )}
+        </CardContent>
+      </CardInner>
     </CardWrapper>
   );
 };
 
+// The main wrapper that will be positioned absolutely in the parent container
 const CardWrapper = styled.div`
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  width: 100%;
+  z-index: ${props => props.$zIndex};
+  transition: transform 0.7s cubic-bezier(0.25, 0.1, 0.25, 1), opacity 0.5s ease-in-out; 
+  will-change: transform, opacity; // Optimize for animation performance
+
+  &.active {
+    display: block;
+    opacity: 1;
+    transform: translateY(0);
+  }
+  
+  &.entering {
+    display: block;
+    opacity: 0;
+    transform: translateY(50px);
+  }
+  
+  &.exiting {
+    display: block;
+    opacity: 0;
+    transform: translateY(-30px);
+  }
+`;
+
+// Inner container for the card content
+const CardInner = styled.div`
   display: grid;
   grid-template-columns: 1fr 1fr;
-  background-color: ${props => props.$isDark ? '#111' : '#f8f8f8'};
-  border-radius: 10px;
+  background-color: ${props => props.$isDark ? '#111' : '#f5f5f5'};
+  border-radius: 16px;
   overflow: hidden;
-  position: relative;
-  box-shadow: ${props => props.theme.shadows.card};
-  margin-bottom: ${props => props.$index === 0 ? '80px' : '300px'}; // Increased space between cards for scroll animation
-  will-change: transform; // Optimize for animation performance
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  margin: 0 auto;
+  max-width: 1200px;
   
-  /* No initial transform, will be handled by GSAP */
-  
-  @media (max-width: ${props => props.theme.breakpoints.md}) {
+  @media (max-width: 768px) {
     grid-template-columns: 1fr;
-    margin-bottom: ${props => props.$index === 0 ? '60px' : '200px'};
   }
 `;
 
 const CardImage = styled.div`
   width: 100%;
   height: 100%;
-  min-height: 400px;
+  min-height: 450px;
   
   img {
     width: 100%;
     height: 100%;
     object-fit: cover;
+    display: block;
   }
   
-  @media (max-width: ${props => props.theme.breakpoints.md}) {
+  @media (max-width: 768px) {
     min-height: 300px;
   }
 `;
 
 const CardContent = styled.div`
   padding: 40px;
+  color: ${props => props.$isDark ? 'white' : 'black'};
   
   h2 {
     font-size: 32px;
+    font-weight: 700;
     margin-bottom: 20px;
-    color: ${props => props.$isDark ? 'white' : props.theme.colors.black};
   }
   
   p {
     line-height: 1.6;
     margin-bottom: 20px;
-    color: ${props => props.$isDark ? '#ccc' : props.theme.colors.lightText};
+    color: ${props => props.$isDark ? 'rgba(255, 255, 255, 0.8)' : '#666'};
   }
 `;
 
@@ -103,37 +137,28 @@ const TagContainer = styled.div`
   display: flex;
   gap: 10px;
   margin-bottom: 20px;
+  flex-wrap: wrap;
 `;
 
 const Tag = styled.span`
-  background-color: ${props => props.$isDark ? '#333' : '#eee'};
-  color: ${props => props.$isDark ? 'white' : props.theme.colors.text};
+  background-color: ${props => props.$isDark ? '#333' : 'black'};
+  color: white;
   padding: 5px 15px;
   border-radius: 50px;
   font-size: 14px;
-  border: ${props => props.$isDark ? 'none' : `1px solid ${props.theme.colors.darkGray}`};
-`;
-
-const Duration = styled.div`
-  background-color: ${props => props.$isDark ? '#333' : '#eee'};
-  color: ${props => props.$isDark ? 'white' : props.theme.colors.text};
-  padding: 5px 15px;
-  border-radius: 50px;
-  font-size: 14px;
-  display: inline-block;
-  margin-bottom: 20px;
-  border: ${props => props.$isDark ? 'none' : `1px solid ${props.theme.colors.darkGray}`};
+  font-weight: 500;
 `;
 
 const Testimonial = styled.div`
   position: relative;
   padding: 20px 0;
-  border-top: 1px solid ${props => props.$isDark ? '#333' : props.theme.colors.darkGray};
+  border-top: 1px solid ${props => props.$isDark ? '#333' : '#ddd'};
+  margin-top: 20px;
   
   p {
     font-style: italic;
-    margin-bottom: 10px;
-    color: ${props => props.$isDark ? '#ccc' : props.theme.colors.lightText};
+    padding-left: 20px;
+    margin-bottom: 15px;
   }
 `;
 
@@ -142,8 +167,8 @@ const Quote = styled.span`
   top: 10px;
   left: -10px;
   font-size: 40px;
-  color: ${props => props.$isDark ? 'white' : props.theme.colors.primary};
   opacity: 0.5;
+  color: ${props => props.$isDark ? 'white' : 'black'};
 `;
 
 const ClientLogo = styled.div`
