@@ -137,7 +137,10 @@ const HeroImage = styled.div`
   img {
     width: 100%;
     height: 100%;
+    padding: 40px;
     object-fit: cover;
+    transition: all 0.3s ease;
+    border-radius: 10px 10px 10px 10px;
   }
   
   @media (max-width: ${props => props.theme.breakpoints.md}) {
@@ -177,14 +180,15 @@ const ButtonIcon = styled.span`
 
 const HeroReview = styled.div`
   position: absolute;
-  bottom: 40px;
-  right: 40px;
+  bottom: 50px;
+  right: 60px;
   background-color: rgba(0, 0, 0, 0.7);
   backdrop-filter: blur(10px);
-  padding: 20px;
+  padding: 30px;
   border-radius: 10px;
-  max-width: 350px;
+  max-width: 280px;
   z-index: 5;
+  opacity: 0.9;
   
   @media (max-width: ${props => props.theme.breakpoints.md}) {
     right: 20px;
@@ -194,7 +198,7 @@ const HeroReview = styled.div`
 `;
 
 const Stars = styled.div`
-  color: ${props => props.theme.colors.primary};
+  color: ${props => props.theme.colors.white};
   font-size: 20px;
   margin-bottom: 10px;
 `;
