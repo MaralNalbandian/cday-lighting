@@ -6,7 +6,6 @@ import theme from './styles/Theme';
 import SimpleScrollFix from './components/utils/SimpleScrollFix';
 
 // Layout Components
-import Header from './components/layout/Header';
 import Footer from './components/layout/Footer';
 
 // Pages and Sections
@@ -32,7 +31,6 @@ function App() {
       <GlobalStyle />
       <SimpleScrollFix />
       <Router>
-        <Header />
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/about" element={<DetailedAbout />} />

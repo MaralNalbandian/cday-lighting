@@ -87,6 +87,7 @@ const StickyConsultationBanner = () => {
 const BannerWrapper = styled.div`
   background-color: #000000;
   width: 100%;
+  height: 100px;
   z-index: 998;
   margin-top: -1px;
   position: ${props => props.$isSticky ? 'fixed' : 'relative'};
