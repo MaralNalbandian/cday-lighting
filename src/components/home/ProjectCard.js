@@ -1,185 +1,185 @@
-import React, { useRef } from 'react';
-import styled from 'styled-components';
+// import React, { useRef } from 'react';
+// import styled from 'styled-components';
 
-const ProjectCard = ({ project, index, total }) => {
-  const cardRef = useRef(null);
-  const isDark = index % 2 !== 0; // odd cards are dark, even cards are light
+// const ProjectCard = ({ project, index, total }) => {
+//   const cardRef = useRef(null);
+//   const isDark = index % 2 !== 0; // odd cards are dark, even cards are light
   
-  return (
-    <CardWrapper 
-      ref={cardRef} 
-      className="project-card"
-      $isDark={isDark}
-      $index={index}
-      $total={total}
-      $zIndex={3 - index} // Ensure proper stacking (first has highest z-index)
-      style={{ opacity: index === 0 ? 1 : 0, display: index === 0 ? 'block' : 'none' }} // Start with only first card visible
-    >
-      <CardInner $isDark={isDark}>
-        <CardImage>
-          <img src={project.image || `/api/placeholder/600/500`} alt={project.title} />
-        </CardImage>
+//   return (
+//     <CardWrapper 
+//       ref={cardRef} 
+//       className="project-card"
+//       $isDark={isDark}
+//       $index={index}
+//       $total={total}
+//       $zIndex={3 - index} // Ensure proper stacking (first has highest z-index)
+//       style={{ opacity: index === 0 ? 1 : 0, display: index === 0 ? 'block' : 'none' }} // Start with only first card visible
+//     >
+//       <CardInner $isDark={isDark}>
+//         <CardImage>
+//           <img src={project.image || `/api/placeholder/600/500`} alt={project.title} />
+//         </CardImage>
         
-        <CardContent $isDark={isDark}>
-          <h2>{project.title}</h2>
-          <p>{project.description}</p>
+//         <CardContent $isDark={isDark}>
+//           <h2>{project.title}</h2>
+//           <p>{project.description}</p>
           
-          {project.tags && (
-            <TagContainer>
-              {project.tags.map((tag, i) => (
-                <Tag key={i} $isDark={isDark}>{tag}</Tag>
-              ))}
-            </TagContainer>
-          )}
+//           {project.tags && (
+//             <TagContainer>
+//               {project.tags.map((tag, i) => (
+//                 <Tag key={i} $isDark={isDark}>{tag}</Tag>
+//               ))}
+//             </TagContainer>
+//           )}
           
-          {project.testimonial && (
-            <Testimonial $isDark={isDark}>
-              <Quote $isDark={isDark}>"</Quote>
-              <p>{project.testimonial.text}</p>
-              {project.testimonial.logo && (
-                <ClientLogo>
-                  <img 
-                    src={project.testimonial.logo} 
-                    alt="Client logo" 
-                    className={isDark ? "invert" : ""} 
-                  />
-                </ClientLogo>
-              )}
-            </Testimonial>
-          )}
-        </CardContent>
-      </CardInner>
-    </CardWrapper>
-  );
-};
+//           {project.testimonial && (
+//             <Testimonial $isDark={isDark}>
+//               <Quote $isDark={isDark}>"</Quote>
+//               <p>{project.testimonial.text}</p>
+//               {project.testimonial.logo && (
+//                 <ClientLogo>
+//                   <img 
+//                     src={project.testimonial.logo} 
+//                     alt="Client logo" 
+//                     className={isDark ? "invert" : ""} 
+//                   />
+//                 </ClientLogo>
+//               )}
+//             </Testimonial>
+//           )}
+//         </CardContent>
+//       </CardInner>
+//     </CardWrapper>
+//   );
+// };
 
-// The main wrapper that will be positioned absolutely in the parent container
-const CardWrapper = styled.div`
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  width: 100%;
-  z-index: ${props => props.$zIndex};
-  transition: transform 0.7s cubic-bezier(0.25, 0.1, 0.25, 1), opacity 0.5s ease-in-out; 
-  will-change: transform, opacity; // Optimize for animation performance
+// // The main wrapper that will be positioned absolutely in the parent container
+// const CardWrapper = styled.div`
+//   position: absolute;
+//   top: 0;
+//   left: 0;
+//   right: 0;
+//   width: 100%;
+//   z-index: ${props => props.$zIndex};
+//   transition: transform 0.7s cubic-bezier(0.25, 0.1, 0.25, 1), opacity 0.5s ease-in-out; 
+//   will-change: transform, opacity; // Optimize for animation performance
 
-  &.active {
-    display: block;
-    opacity: 1;
-    transform: translateY(0);
-  }
+//   &.active {
+//     display: block;
+//     opacity: 1;
+//     transform: translateY(0);
+//   }
   
-  &.entering {
-    display: block;
-    opacity: 0;
-    transform: translateY(50px);
-  }
+//   &.entering {
+//     display: block;
+//     opacity: 0;
+//     transform: translateY(50px);
+//   }
   
-  &.exiting {
-    display: block;
-    opacity: 0;
-    transform: translateY(-30px);
-  }
-`;
+//   &.exiting {
+//     display: block;
+//     opacity: 0;
+//     transform: translateY(-30px);
+//   }
+// `;
 
-// Inner container for the card content
-const CardInner = styled.div`
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  background-color: ${props => props.$isDark ? '#111' : '#f5f5f5'};
-  border-radius: 16px;
-  overflow: hidden;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-  margin: 0 auto;
-  max-width: 1200px;
+// // Inner container for the card content
+// const CardInner = styled.div`
+//   display: grid;
+//   grid-template-columns: 1fr 1fr;
+//   background-color: ${props => props.$isDark ? '#111' : '#f5f5f5'};
+//   border-radius: 16px;
+//   overflow: hidden;
+//   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+//   margin: 0 auto;
+//   max-width: 1200px;
   
-  @media (max-width: 768px) {
-    grid-template-columns: 1fr;
-  }
-`;
+//   @media (max-width: 768px) {
+//     grid-template-columns: 1fr;
+//   }
+// `;
 
-const CardImage = styled.div`
-  width: 100%;
-  height: 100%;
-  min-height: 450px;
+// const CardImage = styled.div`
+//   width: 100%;
+//   height: 100%;
+//   min-height: 450px;
   
-  img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    display: block;
-  }
+//   img {
+//     width: 100%;
+//     height: 100%;
+//     object-fit: cover;
+//     display: block;
+//   }
   
-  @media (max-width: 768px) {
-    min-height: 300px;
-  }
-`;
+//   @media (max-width: 768px) {
+//     min-height: 300px;
+//   }
+// `;
 
-const CardContent = styled.div`
-  padding: 40px;
-  color: ${props => props.$isDark ? 'white' : 'black'};
+// const CardContent = styled.div`
+//   padding: 40px;
+//   color: ${props => props.$isDark ? 'white' : 'black'};
   
-  h2 {
-    font-size: 32px;
-    font-weight: 700;
-    margin-bottom: 20px;
-  }
+//   h2 {
+//     font-size: 32px;
+//     font-weight: 700;
+//     margin-bottom: 20px;
+//   }
   
-  p {
-    line-height: 1.6;
-    margin-bottom: 20px;
-    color: ${props => props.$isDark ? 'rgba(255, 255, 255, 0.8)' : '#666'};
-  }
-`;
+//   p {
+//     line-height: 1.6;
+//     margin-bottom: 20px;
+//     color: ${props => props.$isDark ? 'rgba(255, 255, 255, 0.8)' : '#666'};
+//   }
+// `;
 
-const TagContainer = styled.div`
-  display: flex;
-  gap: 10px;
-  margin-bottom: 20px;
-  flex-wrap: wrap;
-`;
+// const TagContainer = styled.div`
+//   display: flex;
+//   gap: 10px;
+//   margin-bottom: 20px;
+//   flex-wrap: wrap;
+// `;
 
-const Tag = styled.span`
-  background-color: ${props => props.$isDark ? '#333' : 'black'};
-  color: white;
-  padding: 5px 15px;
-  border-radius: 50px;
-  font-size: 14px;
-  font-weight: 500;
-`;
+// const Tag = styled.span`
+//   background-color: ${props => props.$isDark ? '#333' : 'black'};
+//   color: white;
+//   padding: 5px 15px;
+//   border-radius: 50px;
+//   font-size: 14px;
+//   font-weight: 500;
+// `;
 
-const Testimonial = styled.div`
-  position: relative;
-  padding: 20px 0;
-  border-top: 1px solid ${props => props.$isDark ? '#333' : '#ddd'};
-  margin-top: 20px;
+// const Testimonial = styled.div`
+//   position: relative;
+//   padding: 20px 0;
+//   border-top: 1px solid ${props => props.$isDark ? '#333' : '#ddd'};
+//   margin-top: 20px;
   
-  p {
-    font-style: italic;
-    padding-left: 20px;
-    margin-bottom: 15px;
-  }
-`;
+//   p {
+//     font-style: italic;
+//     padding-left: 20px;
+//     margin-bottom: 15px;
+//   }
+// `;
 
-const Quote = styled.span`
-  position: absolute;
-  top: 10px;
-  left: -10px;
-  font-size: 40px;
-  opacity: 0.5;
-  color: ${props => props.$isDark ? 'white' : 'black'};
-`;
+// const Quote = styled.span`
+//   position: absolute;
+//   top: 10px;
+//   left: -10px;
+//   font-size: 40px;
+//   opacity: 0.5;
+//   color: ${props => props.$isDark ? 'white' : 'black'};
+// `;
 
-const ClientLogo = styled.div`
-  width: 80px;
-  height: 40px;
+// const ClientLogo = styled.div`
+//   width: 80px;
+//   height: 40px;
   
-  img {
-    width: 100%;
-    height: 100%;
-    object-fit: contain;
-  }
-`;
+//   img {
+//     width: 100%;
+//     height: 100%;
+//     object-fit: contain;
+//   }
+// `;
 
-export default ProjectCard;
+// export default ProjectCard;

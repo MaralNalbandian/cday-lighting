@@ -7,10 +7,12 @@ import ImageGallery from '../components/home/ImageGallery';
 import About from '../components/home/About';
 import Stats from '../components/home/Stats';
 import Services from '../components/home/Services';
-import Projects from '../components/home/Projects';
+import Projects from '../components/home/ProjectsSection';
 import FAQSection from '../components/home/FAQ';
 import ContactCTA from '../components/home/ContactCTA';
 import TrustedBy from '../components/home/TrustedBy';
+import StickyConsultationBanner from '../components/layout/StickyConsultationBanner';
+
 
 const Home = () => {
   const location = useLocation();
@@ -43,7 +45,7 @@ const Home = () => {
   return (
     <HomeWrapper>
       <Hero />
-      <ConsultationBanner />
+      <StickyConsultationBanner />
       
       <section id="about-section">
         <About />
